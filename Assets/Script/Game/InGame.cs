@@ -77,7 +77,7 @@ public class InGame : MonoBehaviour
                 RaycastHit2D hit = Physics2D.Raycast(p, Vector2.down, 10);
                 if (hit.collider != null)
                 {
-                    Line(p, new Vector3(hit.point.x, hit.point.y, 0), this.survivaltime);
+                    Line(p, new Vector3(hit.point.x, hit.point.y, p.z), this.survivaltime);
                 }
             }
             Debug.DrawRay(p, Vector2.down * 10, Color.red);
@@ -128,7 +128,7 @@ public class InGame : MonoBehaviour
             AddObjectInPool();
         }
         GameObject o = saboteurPool.Dequeue();
-        saboteurs.Add(new Saboteur(o, new Vector3(UseRandom(-8, 8), 5, 0)));
+        saboteurs.Add(new Saboteur(o, new Vector3(UseRandom(-8, 8), 5f, 0)));
     }
 
     void AddObjectInPool()
