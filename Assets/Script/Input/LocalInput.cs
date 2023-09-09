@@ -15,6 +15,14 @@ public class LocalInput : MonoBehaviour
         arrowKey = ArrowKey.NONE;
         attackKey = AttackKey.NONE;
         GameData.startGame += OnStartGame;
+        if (SystemInfo.supportsGyroscope)
+        {
+            Input.gyro.enabled = true;
+        }
+        else
+        {
+
+        }
     }
     void OnStartGame()
     {
@@ -22,12 +30,18 @@ public class LocalInput : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.gyro.userAcceleration.y > 0.1f)
         {
-            
+            arrowKey |= ArrowKey.UP;
         }
-        //test
-       
+        if (Input.gyro.gravity.x > 0.05f)
+        {
+            arrowKey |= ArrowKey.RIGHT;
+        }
+        if (Input.gyro.gravity.x < -0.05f)
+        {
+            arrowKey |= ArrowKey.LEFT;
+        }
         if (Input.GetKey(KeyCode.UpArrow))
         {
             arrowKey |= ArrowKey.UP;
@@ -42,7 +56,7 @@ public class LocalInput : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-           arrowKey |= ArrowKey.LEFT;
+            arrowKey |= ArrowKey.LEFT;
         }
         //GetKeyUp;
         if (Input.GetKeyUp(KeyCode.UpArrow))
@@ -87,7 +101,7 @@ public class LocalInput : MonoBehaviour
             inputKey.Invoke(frameLog);
             f++;
         }
-        
+
         arrowKey &= ArrowKey.NONE;
         attackKey &= AttackKey.NONE;
     }

@@ -22,12 +22,12 @@ public class InGame : MonoBehaviour
 
     Queue<GameObject> saboteurPool = new();
     List<Saboteur> saboteurs = new();
-
+    bool gameStart;
 
     public GameObject saboteur;
     int creat_saboteur_time;
     public GameObject block;
-
+    Queue<GameObject> blockPool = new();
     List<UnityEvent<OnHitEventData>> onHit_channel = new();
 
     public class Saboteur
@@ -72,17 +72,15 @@ public class InGame : MonoBehaviour
         public void Update()
         {
             var p = this.saboteur.transform.position;
-            if (this.survivaltime > 30)
+            if (this.survivaltime > 40)
             {
                 this.saboteur.transform.position = p + new Vector3(this.direction * 0.1f, 0, 0);
             }
-            else if (this.survivaltime <= 30 && this.survivaltime > 20)
+            else if (this.survivaltime <= 40 && this.survivaltime > 20)
             {
-
             }
             else
             {
-
                 RaycastHit2D hit = Physics2D.Raycast(p, Vector2.down, 10);
                 if (hit.collider != null)
                 {
@@ -116,33 +114,44 @@ public class InGame : MonoBehaviour
 
     void Start()
     {
+        GameData.startGame += () => gameStart = true;
         timer = createTimer();
         for (int i = 0; i < 10; i++)//預載入物件池大小
         {
             AddObjectInPool();
+            blockPool.Enqueue(Instantiate(block, new Vector3(0, 0, 0), Quaternion.identity));
         }
 
 
     }
     bool down;
+    Dictionary<int, GameObject> toucheToBlock = new();
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        Touch[] touches = Input.touches;
+        foreach (Touch touch in touches)
         {
-            block.SetActive(true);
-            down = true;
+            if (touch.phase == TouchPhase.Began)
+            {
+                var o = blockPool.Dequeue();
+                toucheToBlock.Add(touch.fingerId, o);
+            }
+            else if (touch.phase == TouchPhase.Moved)
+            {
+                Vector2 touchPosition = touch.position;
+                Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(touchPosition.x, touchPosition.y, 0));
+                toucheToBlock[touch.fingerId].SetActive(true);
+                toucheToBlock[touch.fingerId].transform.position = new Vector3(worldPosition.x, worldPosition.y, 0);
+            }
+            else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+            {
+
+                toucheToBlock[touch.fingerId].SetActive(false);
+                blockPool.Enqueue(toucheToBlock[touch.fingerId]);
+                toucheToBlock.Remove(touch.fingerId);
+            }
         }
-        if (down)
-        {
-            Vector3 mousePosition = Input.mousePosition;
-            Vector3 worldMousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
-            block.transform.position = new Vector3(worldMousePosition.x, worldMousePosition.y, 0);
-        }
-        if (Input.GetMouseButtonUp(0))
-        {
-            block.SetActive(false);
-            down = false;
-        }
+
     }
     void CreatSaboteur()
     {
@@ -170,7 +179,6 @@ public class InGame : MonoBehaviour
             player.GetComponent<Controller>().onHit_channel.AddListener(OnHit);
 
         }
-
 
         Test_SpawnPoint();
 
@@ -200,29 +208,33 @@ public class InGame : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (timer() > 0)
+        if (gameStart)
         {
-            timer();
-        }
-        else
-        {
-            timer = createTimer();
-            CreatSaboteur();
-        }
 
 
-        for (int i = 0; i < saboteurs.Count; i++)
-        {
-            saboteurs[i].Update();
-            if (saboteurs[i].survivaltime < 0)
+            if (timer() > 0)
             {
-                saboteurs[i].ReSet();
-                saboteurPool.Enqueue(saboteurs[i].saboteur);
-                saboteurs.Remove(saboteurs[i]);
-                i--;
+                timer();
+            }
+            else
+            {
+                timer = createTimer();
+                CreatSaboteur();
+            }
+
+
+            for (int i = 0; i < saboteurs.Count; i++)
+            {
+                saboteurs[i].Update();
+                if (saboteurs[i].survivaltime < 0)
+                {
+                    saboteurs[i].ReSet();
+                    saboteurPool.Enqueue(saboteurs[i].saboteur);
+                    saboteurs.Remove(saboteurs[i]);
+                    i--;
+                }
             }
         }
-
     }
 
     Func<int> createTimer()
