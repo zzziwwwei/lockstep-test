@@ -6,10 +6,15 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.PlayerLoop;
 
-class WorldSetting
-{
 
+interface IOnHit_Raycast
+{
+    public void OnTrigger();
+    public void LeaveTrigger();
+    void EnterTrigger();
 }
+
+
 public class InGame : MonoBehaviour
 {
     public PlayerHandler playerHandler;
@@ -18,11 +23,12 @@ public class InGame : MonoBehaviour
     Queue<GameObject> saboteurPool = new();
     List<Saboteur> saboteurs = new();
 
+
     public GameObject saboteur;
     int creat_saboteur_time;
     public GameObject block;
 
-    List<UnityEvent<OnHit>> onHit_channel = new();
+    List<UnityEvent<OnHitEventData>> onHit_channel = new();
 
     public class Saboteur
     {
@@ -33,7 +39,8 @@ public class InGame : MonoBehaviour
         public int survivaltime;
         int direction;
         float attackLength = 20f;
-
+        bool onHit;
+        IOnHit_Raycast onHit_Raycast;
         public Saboteur(GameObject saboteur, Vector3 position)
         {
             this.saboteur = saboteur;
@@ -50,6 +57,7 @@ public class InGame : MonoBehaviour
         public void ReSet() //物件銷毀
         {
             this.saboteur.SetActive(false);
+            onHit_Raycast?.LeaveTrigger();
         }
         void Line(Vector3 s, Vector3 e, int t)
         {
@@ -74,12 +82,27 @@ public class InGame : MonoBehaviour
             }
             else
             {
+
                 RaycastHit2D hit = Physics2D.Raycast(p, Vector2.down, 10);
                 if (hit.collider != null)
                 {
+                    var current = hit.collider.gameObject.GetComponent<IOnHit_Raycast>();
                     Line(p, new Vector3(hit.point.x, hit.point.y, p.z), this.survivaltime);
+                    if (current != onHit_Raycast)
+                    {
+                        current?.EnterTrigger();
+                        onHit_Raycast?.LeaveTrigger();
+                    }
+                    onHit_Raycast = current;
+                    current?.OnTrigger();
                 }
+                else
+                {
+                    onHit_Raycast = null;
+                }
+
             }
+
             Debug.DrawRay(p, Vector2.down * 10, Color.red);
             //Debug.Log("Hit object: " + hit.collider.gameObject.name);
             this.survivaltime--;
@@ -143,8 +166,8 @@ public class InGame : MonoBehaviour
         foreach (var player in playerHandler.characters)
         {
             this.players.Add(player);
-            onHit_channel.Add(new UnityEvent<OnHit>());
-            player.GetComponent<Controller>().onHit_channel.AddListener(On_Hit);
+            onHit_channel.Add(new UnityEvent<OnHitEventData>());
+            player.GetComponent<Controller>().onHit_channel.AddListener(OnHit);
 
         }
 
@@ -153,21 +176,19 @@ public class InGame : MonoBehaviour
 
     }
 
-    void On_Hit(OnHit arg0)
+    void OnHit(OnHitEventData arg0)
     {
         Debug.Log("onhit" + arg0.onHitID);
-        if (arg0.on)
+        if (arg0.trigger == OnHitEventData.Trigger.Enter)
         {
             ChangeColor(players[arg0.onHitID].transform.GetChild(0), 255, 0, 0, 200);
             ChangeColor(players[arg0.onHitID].transform.GetChild(1), 255, 0, 0, 200);
         }
-        else
+        if (arg0.trigger == OnHitEventData.Trigger.Leave)
         {
             ChangeColor(players[arg0.onHitID].transform.GetChild(0), 0, 227, 255, 200);
             ChangeColor(players[arg0.onHitID].transform.GetChild(1), 0, 227, 255, 200);
         }
-
-
     }
 
 

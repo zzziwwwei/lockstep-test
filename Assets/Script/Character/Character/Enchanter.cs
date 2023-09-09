@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class Enchanter : Controller
+public class Enchanter : Controller, IOnHit_Raycast
 {
     public GameObject upperbody;
     public GameObject lowerbody;
 
+    public int objectID =0;
     List<ActionEvent> actionList = new();
     int jumping;
     void Start()
@@ -144,7 +145,6 @@ public class Enchanter : Controller
 
         if (t == (jump_ac.Length - 1))
         {
-            onHit_channel.Invoke(new OnHit(0,this.gameObject,false));
             isJump = false;
         }
 
@@ -152,7 +152,7 @@ public class Enchanter : Controller
     }
     void Jump(bool isRollBack, int o)
     {
-        onHit_channel.Invoke(new OnHit(0,this.gameObject,true));
+
         if (!isRollBack)
         {
             actionList.Add(new ActionEvent(Jump_ac, o, jump_ac.Length - 1, true));
@@ -199,5 +199,18 @@ public class Enchanter : Controller
             upperbody.GetComponent<BoxCollider2D>().enabled = true;
         }
 
+    }
+
+    public void OnTrigger()
+    {
+        onHit_channel.Invoke(new OnHitEventData(objectID, OnHitEventData.Trigger.Stay));
+    }
+    public void LeaveTrigger()
+    {
+        onHit_channel.Invoke(new OnHitEventData(objectID, OnHitEventData.Trigger.Leave));
+    }
+    public void EnterTrigger()
+    {
+        onHit_channel.Invoke(new OnHitEventData(objectID, OnHitEventData.Trigger.Enter));
     }
 }

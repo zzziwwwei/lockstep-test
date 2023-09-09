@@ -1,23 +1,28 @@
 using UnityEngine.Events;
 using UnityEngine;
 using System;
-public class OnHit
+public class OnHitEventData
 {
     public int onHitID;
     public GameObject hitter;
-
-    public bool on;
-    public OnHit(int onHitID,GameObject hitter,bool on){
+    public Trigger trigger;
+    public OnHitEventData(int onHitID, Trigger trigger)
+    {
         this.onHitID = onHitID;
-        this.hitter = hitter;
-        this.on = on;
+        this.trigger = trigger;
+    }
+    public enum Trigger
+    {
+        Enter = 0,
+        Stay = 1,
+        Leave = 2
     }
 }
 public abstract class Controller : MonoBehaviour
 {
     public UnityEvent<Command> command_channel;
     public UnityEvent<string> rollback_channel;
-    public UnityEvent<OnHit> onHit_channel;
+    public UnityEvent<OnHitEventData> onHit_channel;
 
     public delegate void Method(int t);
     public class ActionEvent
