@@ -40,18 +40,20 @@ public class UI : MonoBehaviour
  
     void FakePing(float value)
     {
-         ping.text = "ping:" +(int)(value*3.3f)+"ms";
+        ping.text = "inputDelay:"+(int)(o)+"\n"+"ping:" +(int)(value*3.3f)+"ms";
         GameData.fakePing.Invoke((int)value);
     }
+    int o;
     void GameStart()
     {
         Debug.Log("button");
         string inputText = inputdelay.text; // 获取输入字段的文本内容
-        int o;
+        
         bool success = int.TryParse(inputText, out o);
         if (success)
         {
-            GameData.inputDelay = o;
+            
+            GameData.inputDelay = (int)(o/3.3f);
         }
         hide.SetActive(false);
 

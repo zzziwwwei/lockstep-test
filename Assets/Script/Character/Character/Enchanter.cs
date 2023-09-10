@@ -9,9 +9,10 @@ public class Enchanter : Controller, IOnHit_Raycast
     public GameObject upperbody;
     public GameObject lowerbody;
 
-    ActionEvent jump ;
+
     public int objectID = 0;
     List<ActionEvent> actionList = new();
+    int jumping;
     void Start()
     {
         command_channel.AddListener(OnCommand);
@@ -39,7 +40,6 @@ public class Enchanter : Controller, IOnHit_Raycast
             }
             action.ACT++;
         }
-        
     }
 
     //跳躍回滾判定_尚未實現
@@ -109,7 +109,7 @@ public class Enchanter : Controller, IOnHit_Raycast
             }
             if (arrowKey.HasFlag(ArrowKey.UP))
             {
-                if (!isJump && (GameData.gameTime - command_frame < jump_ac.Length-1))
+                if (!isJump)
                 {
                     isJump = true;
                     Jump(isRollBack, GameData.gameTime - command_frame);
@@ -143,17 +143,13 @@ public class Enchanter : Controller, IOnHit_Raycast
         {
             isJump = false;
         }
-
-
     }
     void Jump(bool isRollBack, int o)
     {
-
-        if (!isRollBack)
+        if (o < jump_ac.Length)
         {
             actionList.Add(new ActionEvent(Jump_ac, o, jump_ac.Length - 1, true));
         }
-
     }
     void Move(bool isRollBack, string direction)
     {

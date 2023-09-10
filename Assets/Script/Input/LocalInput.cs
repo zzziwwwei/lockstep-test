@@ -49,8 +49,7 @@ public class LocalInput : MonoBehaviour
     int reloadScene;
     void Update()
     {
-
-        if (Input.gyro.userAcceleration.y > 0.1f)
+        if (Input.gyro.userAcceleration.y > 0.15f)
         {
             arrowKey |= ArrowKey.UP;
         }

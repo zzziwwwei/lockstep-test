@@ -88,11 +88,22 @@ public class GameLog : MonoBehaviour
         if (currentFrame - predictRange >= 0)
         {
             var preLog = logList[player].keyLogs[currentFrame - predictRange];
+
             for (int i = currentFrame - predictRange + 1; i <= currentFrame; i++)
             {
                 Debug.Log("Predict" + player + "/" + i);
-                logList[player].keyLogs[i].arrowKey = preLog.arrowKey;
-                logList[player].keyLogs[i].attackKey = preLog.attackKey;
+                if (preLog.arrowKey == ArrowKey.UP)
+                {
+                    logList[player].keyLogs[i].arrowKey = ArrowKey.NONE;
+                    logList[player].keyLogs[i].attackKey = preLog.attackKey;
+                }
+                else
+                {
+                    logList[player].keyLogs[i].arrowKey = preLog.arrowKey;
+                    logList[player].keyLogs[i].attackKey = preLog.attackKey;
+                }
+
+
             }
         }
     }
