@@ -9,15 +9,14 @@ public class Enchanter : Controller, IOnHit_Raycast
     public GameObject upperbody;
     public GameObject lowerbody;
 
-    
-    public int objectID =0;
+    ActionEvent jump ;
+    public int objectID = 0;
     List<ActionEvent> actionList = new();
-    int jumping;
     void Start()
     {
         command_channel.AddListener(OnCommand);
         //rollback_channel.AddListener(OnRollback);
-        Set_jump_ac(30, 0.05f);
+        Set_jump_ac(40, 0.015f);
 
     }
     void FixedUpdate()
@@ -40,10 +39,7 @@ public class Enchanter : Controller, IOnHit_Raycast
             }
             action.ACT++;
         }
-    }
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        Debug.Log("OnTriggerEnter2D");
+        
     }
 
     //跳躍回滾判定_尚未實現
@@ -113,7 +109,7 @@ public class Enchanter : Controller, IOnHit_Raycast
             }
             if (arrowKey.HasFlag(ArrowKey.UP))
             {
-                if (!isJump)
+                if (!isJump && (GameData.gameTime - command_frame < jump_ac.Length-1))
                 {
                     isJump = true;
                     Jump(isRollBack, GameData.gameTime - command_frame);
@@ -143,7 +139,6 @@ public class Enchanter : Controller, IOnHit_Raycast
     void Jump_ac(int t)
     {
         this.transform.position = new Vector3(this.transform.position.x, jump_ac[t], this.transform.position.z);
-
         if (t == (jump_ac.Length - 1))
         {
             isJump = false;

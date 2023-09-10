@@ -1,6 +1,7 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
-
+using UnityEngine.SceneManagement;
 public class LocalInput : MonoBehaviour
 {
     public UnityEvent<FrameLog> inputKey = new();
@@ -23,16 +24,43 @@ public class LocalInput : MonoBehaviour
         {
 
         }
+        timer = createTimer();
     }
     void OnStartGame()
     {
         startGame = true;
     }
+    void ReloadScene()
+    {
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(currentSceneName);
+    }
+    Func<int> createTimer()
+    {
+        int time = 30;
+        Func<int> reduce = () =>
+            {
+                time--;
+                return time;
+            };
+        return reduce;
+    }
+    Func<int> timer;
+    int reloadScene;
     void Update()
     {
+
         if (Input.gyro.userAcceleration.y > 0.1f)
         {
             arrowKey |= ArrowKey.UP;
+        }
+        if (Input.gyro.userAcceleration.y > 1.2f)
+        {
+            reloadScene++;
+        }
+        if (reloadScene > 3)
+        {
+            ReloadScene();
         }
         if (Input.gyro.gravity.x > 0.05f)
         {
@@ -77,8 +105,18 @@ public class LocalInput : MonoBehaviour
         }
     }
     int f = 0;
+
     void FixedUpdate()
     {
+        if (timer() > 0)
+        {
+            timer();
+        }
+        else
+        {
+            reloadScene = 0;
+            timer = createTimer();
+        }
         if (arrowKey.HasFlag(ArrowKey.UP) && arrowKey.HasFlag(ArrowKey.DOWN))
         {
             arrowKey ^= ArrowKey.UP;

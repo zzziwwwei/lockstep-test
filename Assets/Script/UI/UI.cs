@@ -25,28 +25,36 @@ public class UI : MonoBehaviour
     public TMP_InputField inputdelay;
     public Button gameStart;
     public Slider fakePing;
+    public GameObject hide;
+    public TMP_Text ping;
     public State_Equal<ArrowKey> stateEqual = new();
     void Start()
     {
         CreatInputLog();
         localInput.inputKey.AddListener(OnInputKey);
         gameStart.onClick.AddListener(GameStart);
-        fakePing.minValue = -1;
-        fakePing.maxValue = 20;
+        fakePing.minValue = 0;
+        fakePing.maxValue = 40;
         fakePing.onValueChanged.AddListener(FakePing);
-
     }
+ 
     void FakePing(float value)
     {
+         ping.text = "ping:" +(int)(value*3.3f)+"ms";
         GameData.fakePing.Invoke((int)value);
     }
     void GameStart()
     {
         Debug.Log("button");
-        if (inputdelay != null)
+        string inputText = inputdelay.text; // 获取输入字段的文本内容
+        int o;
+        bool success = int.TryParse(inputText, out o);
+        if (success)
         {
-           // GameData.inputDelay = int.Parse(inputdelay.text);
+            GameData.inputDelay = o;
         }
+        hide.SetActive(false);
+
         GameData.startGame.Invoke();
     }
     void CreatInputLog()

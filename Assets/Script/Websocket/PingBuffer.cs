@@ -17,25 +17,28 @@ public class PingBuffer : MonoBehaviour
 
     void ReceiveKey(FrameLog frameLog)
     {
+       
         FrameLog Log = new();
         Log.playerId = 1;
         Log.currentFrame = frameLog.currentFrame;
-        Log.currentFrame =Log.currentFrame;
         Log.keyLog.arrowKey = frameLog.keyLog.arrowKey;
         Log.keyLog.attackKey = frameLog.keyLog.attackKey;
         buffer.Enqueue(Log);
+        SendKey();
     }
-    void FixedUpdate()
+    void SendKey()
     {    
+        timer++;
         if (timer >= fakePing)
         {
             while (buffer.Count > 0)
             {
-                inputKey.Invoke(buffer.Dequeue());
+                var l =buffer.Dequeue();
+                inputKey.Invoke(l);
+                Debug.Log("Send:"+l.currentFrame);
             }
             timer = 0;
-        }
-        timer++;
+        }   
     }
 
 }

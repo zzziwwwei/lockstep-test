@@ -50,7 +50,7 @@ public class InGame : MonoBehaviour
         void Init()
         {
             saboteur.transform.position = position;
-            this.survivaltime = (int)UnityEngine.Random.Range(60, 120);
+            this.survivaltime = (int)UnityEngine.Random.Range(90, 120);
             this.direction = (int)UnityEngine.Random.Range(-1, 2);
             this.saboteur.SetActive(true);
         }
@@ -66,17 +66,17 @@ public class InGame : MonoBehaviour
             line[1] = e;
             LineRenderer lineRenderer = this.saboteur.GetComponent<LineRenderer>();
             lineRenderer.SetPositions(line);
-            lineRenderer.startWidth = 0.05f * t;
-            lineRenderer.endWidth = 0.05f * t;
+            lineRenderer.startWidth = 0.02f * t;
+            lineRenderer.endWidth = 0.02f * t;
         }
         public void Update()
         {
             var p = this.saboteur.transform.position;
-            if (this.survivaltime > 40)
+            if (this.survivaltime > 60)
             {
                 this.saboteur.transform.position = p + new Vector3(this.direction * 0.1f, 0, 0);
             }
-            else if (this.survivaltime <= 40 && this.survivaltime > 20)
+            else if (this.survivaltime <= 60 && this.survivaltime > 50)
             {
             }
             else
@@ -186,7 +186,6 @@ public class InGame : MonoBehaviour
 
     void OnHit(OnHitEventData arg0)
     {
-        Debug.Log("onhit" + arg0.onHitID);
         if (arg0.trigger == OnHitEventData.Trigger.Enter)
         {
             ChangeColor(players[arg0.onHitID].transform.GetChild(0), 255, 0, 0, 200);
@@ -194,18 +193,11 @@ public class InGame : MonoBehaviour
         }
         if (arg0.trigger == OnHitEventData.Trigger.Leave)
         {
-            ChangeColor(players[arg0.onHitID].transform.GetChild(0), 0, 227, 255, 200);
-            ChangeColor(players[arg0.onHitID].transform.GetChild(1), 0, 227, 255, 200);
+            ChangeColor(players[arg0.onHitID].transform.GetChild(0), 0, 227, 255, 100);
+            ChangeColor(players[arg0.onHitID].transform.GetChild(1), 0, 227, 255, 100);
         }
     }
-
-
-    void On_Hit()
-    {
-
-    }
     Func<int> timer;
-
     void FixedUpdate()
     {
         if (gameStart)

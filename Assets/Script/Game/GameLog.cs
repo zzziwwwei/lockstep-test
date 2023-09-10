@@ -22,8 +22,8 @@ public class Log
 public class GameLog : MonoBehaviour
 {
     public List<Log> logList = new();
-    public UnityEvent<int, int,int> rollback;
-    public UnityEvent<int, int,int> reback;
+    public UnityEvent<int, int, int> rollback;
+    public UnityEvent<int, int, int> reback;
     public Receive receive;
     public LocalInput localInput;
     public PingBuffer pingBuffer;
@@ -32,7 +32,7 @@ public class GameLog : MonoBehaviour
         GameData.startGame += OnStartGame;
         localInput.inputKey.AddListener(InputKey);
         pingBuffer.inputKey.AddListener(NetInputKey);
-       // receive.inputKey.AddListener(NetInputKey);
+        // receive.inputKey.AddListener(NetInputKey);
     }
     void OnStartGame()
     {
@@ -53,11 +53,11 @@ public class GameLog : MonoBehaviour
         {
             if (log.arrowKey != frameLog.keyLog.arrowKey)
             {
-                //Debug.Log("rollback://"+"pre_key:" + log.arrowKey + "/new_key" + frameLog.keyLog.arrowKey + "/f:" + frameLog.currentFrame+"/gametime:"+GameData.gameTime);
-                rollback.Invoke(frameLog.playerId, frameLog.currentFrame,GameData.gameTime-1);
+                Debug.Log("rollback://" + "pre_key:" + log.arrowKey + "/new_key" + frameLog.keyLog.arrowKey + "/f:" + frameLog.currentFrame + "/gametime:" + GameData.gameTime);
+                rollback.Invoke(frameLog.playerId, frameLog.currentFrame, GameData.gameTime - 1);
                 log.arrowKey = frameLog.keyLog.arrowKey;
                 log.attackKey = frameLog.keyLog.attackKey;
-                reback.Invoke(frameLog.playerId, frameLog.currentFrame,GameData.gameTime-1);
+                reback.Invoke(frameLog.playerId, frameLog.currentFrame, GameData.gameTime - 1);
             }
             else
             {
@@ -66,7 +66,7 @@ public class GameLog : MonoBehaviour
         }
         logList[frameLog.playerId].keyLogs[frameLog.currentFrame].arrowKey = frameLog.keyLog.arrowKey;
     }
-  
+
 
     void NetInputKey(FrameLog data)
     {
@@ -80,17 +80,21 @@ public class GameLog : MonoBehaviour
         while (logList[player].keyLogs[currentFrame - predictRange].arrowKey == ArrowKey.NULL)
         {
             predictRange++;
+            if (currentFrame - predictRange < 0)
+            {
+                break;
+            }
         }
-
-        var preLog = logList[player].keyLogs[currentFrame - predictRange];
-
-        for (int i = currentFrame - predictRange+1; i <= currentFrame; i++)
+        if (currentFrame - predictRange >= 0)
         {
-            //Debug.Log("Predict"+player+"/"+i);
-            logList[player].keyLogs[i].arrowKey = preLog.arrowKey;
-            logList[player].keyLogs[i].attackKey = preLog.attackKey;
+            var preLog = logList[player].keyLogs[currentFrame - predictRange];
+            for (int i = currentFrame - predictRange + 1; i <= currentFrame; i++)
+            {
+                Debug.Log("Predict" + player + "/" + i);
+                logList[player].keyLogs[i].arrowKey = preLog.arrowKey;
+                logList[player].keyLogs[i].attackKey = preLog.attackKey;
+            }
         }
-
     }
     public void RemovePredict(int player, int f)
     {
