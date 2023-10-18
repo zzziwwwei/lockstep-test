@@ -7,10 +7,10 @@
 ##
 ##
 ## 遊戲預覽(預設延遲)
-![image](https://drive.google.com/file/d/1J4JP-2g1aoW9W6dWxZAucY5jO5rdyT57/view?usp=share_link)
+![image](https://github.com/zzziwwwei/androidGame/blob/main/readme/%E9%80%A3%E7%B7%9A.gif)
 ##
 ## 架構圖
-![image](https://drive.google.com/file/d/1J4JP-2g1aoW9W6dWxZAucY5jO5rdyT57/view)
+![image](https://github.com/zzziwwwei/androidGame/blob/main/readme/%E5%B9%80%E5%90%8C%E6%AD%A5%E5%AF%A6%E4%BD%9C%E6%9E%B6%E6%A7%8B%E5%9C%96.jpg)
 
 ##
 > * Input:處理本地輸入與其他client端輸入
