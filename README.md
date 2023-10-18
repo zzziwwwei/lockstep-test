@@ -6,13 +6,11 @@
 
 ##
 ##
-## 實例(左側為本地、右側為連線端)
-![image](https://github.com/zzziwwwei/FightingGame/blob/main/%E5%AF%A6%E4%BE%8B.gif)
 ## 遊戲預覽(預設延遲)
-![image](https://github.com/zzziwwwei/FightingGame/blob/main/2023-09-12%2000-49-57.gif)
+![image](https://drive.google.com/file/d/1RnsApiZfwNSOZxIbdF5sY4c3Nu27-yFb/view?usp=share_link)
 ##
 ## 架構圖
-![image](https://github.com/zzziwwwei/FightingGame/blob/main/%E5%B9%80%E5%90%8C%E6%AD%A5%E6%9E%B6%E6%A7%8B%E5%9C%96(%E4%BF%AE%E6%AD%A3).jpg)
+![image](https://drive.google.com/file/d/1RnsApiZfwNSOZxIbdF5sY4c3Nu27-yFb/view?usp=share_link)
 
 ##
 > * Input:處理本地輸入與其他client端輸入
