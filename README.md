@@ -10,7 +10,7 @@
 ![image](https://drive.google.com/file/d/1J4JP-2g1aoW9W6dWxZAucY5jO5rdyT57/view?usp=share_link)
 ##
 ## 架構圖
-![image]
+![image](https://drive.google.com/file/d/1J4JP-2g1aoW9W6dWxZAucY5jO5rdyT57/view)
 
 ##
 > * Input:處理本地輸入與其他client端輸入
