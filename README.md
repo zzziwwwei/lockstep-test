@@ -7,10 +7,10 @@
 ##
 ##
 ## 遊戲預覽(預設延遲)
-![image](https://drive.google.com/file/d/1RnsApiZfwNSOZxIbdF5sY4c3Nu27-yFb/view?usp=share_link)
+![image](https://drive.google.com/file/d/1J4JP-2g1aoW9W6dWxZAucY5jO5rdyT57/view?usp=share_link)
 ##
 ## 架構圖
-![image](https://drive.google.com/file/d/1RnsApiZfwNSOZxIbdF5sY4c3Nu27-yFb/view?usp=share_link)
+![image]
 
 ##
 > * Input:處理本地輸入與其他client端輸入
